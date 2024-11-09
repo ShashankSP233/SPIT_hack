@@ -39,7 +39,7 @@ def generate_correlated_value(base_value, correlation='inverse', min_val=1, max_
 
 # Function to generate the CSV file
 def generate_data(num_entries_per_category):
-    with open('generated_tools_data_sequential.csv', mode='w', newline='') as file:
+    with open('generated_tools_data_seuential.csv', mode='w', newline='') as file:
         writer = csv.writer(file)
         
         # Writing header
