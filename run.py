@@ -2,11 +2,14 @@ import json
 import joblib  # For loading the saved model
 import pandas as pd
 
-# Load the dataset (you should have the same dataset for the recommendations)
-data = pd.read_csv("sustainable_ai_tools_dataset3.csv")
+# Load the dataset
+data = pd.read_csv("generated_tools_data_sequential.csv")
 
-# Define environmental score
-data["Environmental Score"] = (data["Energy Efficiency"] + data["Waste Reduction"]) / data["Carbon Footprint"]
+# Define environmental score with additional environmental parameters
+data["Environmental Score"] = (
+    (data["Energy Efficiency"] + data["Waste Reduction"] + data["Resource Efficiency"] + data["Lifetime Durability"]) /
+    (data["Carbon Footprint"] + data["Energy Consumption"] + data["Water Usage"])
+)
 
 # Define features (accuracy, speed, environmental score)
 X = data[["Accuracy", "Speed", "Environmental Score"]]
@@ -29,17 +32,17 @@ def get_recommendations_from_json(input_json):
 
         # Define weights based on preference
         if preference == "accuracy":
-            alpha, beta = 0.7, 0.3
+            alpha, beta, gamma = 0.7, 0.2, 0.1
         elif preference == "speed":
-            alpha, beta = 0.3, 0.7
+            alpha, beta, gamma = 0.2, 0.7, 0.1
         else:  # mix
-            alpha, beta = 0.5, 0.5
+            alpha, beta, gamma = 0.4, 0.4, 0.2
 
-        # Calculate combined score
+        # Calculate combined score with environmental impact
         category_tools["Score"] = (
-            alpha * category_tools["Accuracy"] + 
-            beta * category_tools["Speed"] + 
-            0.5 * category_tools["Environmental Score"]
+            alpha * category_tools["Accuracy"] +
+            beta * category_tools["Speed"] +
+            gamma * category_tools["Environmental Score"]
         )
 
         # Sort tools by score and select top_n
@@ -55,7 +58,11 @@ def get_recommendations_from_json(input_json):
                 "Speed": row["Speed"],
                 "Energy Efficiency": row["Energy Efficiency"],
                 "Carbon Footprint": row["Carbon Footprint"],
-                "Waste Reduction": row["Waste Reduction"]
+                "Waste Reduction": row["Waste Reduction"],
+                "Energy Consumption": row["Energy Consumption"],
+                "Resource Efficiency": row["Resource Efficiency"],
+                "Water Usage": row["Water Usage"],
+                "Lifetime Durability": row["Lifetime Durability"]
             })
 
         return recommendations

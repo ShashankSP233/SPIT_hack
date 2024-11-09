@@ -6,10 +6,13 @@ from sklearn.pipeline import Pipeline
 import joblib  # For saving the model
 
 # Load the dataset
-data = pd.read_csv("sustainable_ai_tools_dataset3.csv")
+data = pd.read_csv("generated_tools_data_sequential.csv")
 
-# Define environmental score
-data["Environmental Score"] = (data["Energy Efficiency"] + data["Waste Reduction"]) / data["Carbon Footprint"]
+# Define environmental score with additional environmental parameters
+data["Environmental Score"] = (
+    (data["Energy Efficiency"] + data["Waste Reduction"] + data["Resource Efficiency"] + data["Lifetime Durability"]) /
+    (data["Carbon Footprint"] + data["Energy Consumption"] + data["Water Usage"])
+)
 
 # Define features (accuracy, speed, environmental score)
 X = data[["Accuracy", "Speed", "Environmental Score"]]
